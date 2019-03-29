@@ -1,4 +1,4 @@
-# Yearbook as a Service
+# Personal Site
 
 ## Feel free to clone it and run the commands to get it setup
 ~~~~
