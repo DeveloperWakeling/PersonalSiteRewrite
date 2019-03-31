@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from './types';
+import { LOGIN, LOGOUT, SUBSCRIBE } from './types';
 import * as Models from '../models';
 import { push } from 'connected-react-router';
 
@@ -62,5 +62,41 @@ export const protectedRoute = () => (dispatch) => {
                 logout()(dispatch);
             }
             return data.json()
+        });
+}
+
+export const subscribe = (userid: string) => dispatch => {
+    fetch(API_URL + '/api/users/' + userid + '/subscribe', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+    })
+        .then(data => data.json())
+        .then(payload => {
+            dispatch({
+                type: SUBSCRIBE,
+                payload: payload
+            });
+        });
+}
+
+export const subscribeAnon = (sub: Models.LearnMore) => dispatch => {
+    fetch(API_URL + '/api/subscribe', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify(sub)
+    })
+        .then(data => {
+            if(data.status === 200){
+                alert("You are all signed up!");
+            }
+            // dispatch({
+            //     type: SUBSCRIBE,
+            //     payload: payload
+            // });
         });
 }

@@ -7,13 +7,15 @@ import LearnMore from '../components/learnmore';
 import Dashboard from './dashboard';
 import SignUp from '../components/signup';
 import Login from '../pages/login';
+import * as Models from '../models';
+import { subscribeAnon } from '../actions/authActions';
 
 interface HomeStateProps {
     loggedIn: boolean;
 }
 
 interface HomeDispatchProps {
-
+    signup: (sub: Models.LearnMore) => void
 }
 
 interface HomeState {
@@ -62,7 +64,7 @@ class Home extends React.Component<HomeStateProps & HomeDispatchProps, HomeState
                     <Divider horizontal section>
                         Learn More
                     </Divider>
-                    <LearnMore />
+                    <LearnMore signUp={this.props.signup}/>
                 </Grid>
             </Container>
         );
@@ -73,7 +75,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const dispatchToProps = {
-
+    signup: subscribeAnon
 }
 
 export default connect<HomeStateProps, HomeDispatchProps>(mapStateToProps, dispatchToProps)(Home)

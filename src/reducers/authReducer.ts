@@ -1,13 +1,17 @@
-import { LOGIN, SIGNUP, LOGOUT, PROTECTED } from '../actions/types';
+import { LOGIN, SIGNUP, LOGOUT, PROTECTED, SUBSCRIBE } from '../actions/types';
+import * as Models from '../models';
+import * as jwt_decode from 'jwt-decode';
 interface initState {
     token: any,
     loggedIn: boolean,
-    loginError: boolean
+    loginError: boolean,
+    user: Models.User
 }
 const initialState: initState = {
     token: localStorage.getItem('token'),
     loggedIn: localStorage.getItem('token') ? true : false,
-    loginError: false
+    loginError: false,
+    user: localStorage.getItem('token') ? jwt_decode(localStorage.getItem('token')).user : null
 }
 
 export default function(state = initialState, action) {
@@ -15,14 +19,16 @@ export default function(state = initialState, action) {
         case LOGIN:
             let token = action.payload.token;
             let loggedIn = false;
+            let user = null;
             if(token){
-                localStorage.setItem('token', action.payload.token);
+                localStorage.setItem('token', token);
                 loggedIn = true;
             }
             return {
                 ...state,
                 token: token,
                 loggedIn: loggedIn,
+                user: action.payload.user,
                 loginError: !!action.payload.loginError//Added double ! to filter out if there wasn't a login error
             }
         case SIGNUP:
@@ -38,6 +44,7 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 token: action.payload.token,
+                user: action.payload.user,
                 loggedIn: action.payload.loggedIn
             }
         case LOGOUT: 
@@ -45,7 +52,13 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 token: undefined,
-                loggedIn: false
+                loggedIn: false,
+                user: null
+            }
+        case SUBSCRIBE:
+            return {
+                ...state,
+                user: action.payload.user
             }
         default:
             return state;
